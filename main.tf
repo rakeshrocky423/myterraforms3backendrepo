@@ -1,9 +1,9 @@
 provider "aws" {
-  region = var.aws_region
+  region = ap-south-1
 }
 
 resource "aws_vpc" "main" {
-  cidr_block = "172.16.0.0/16"
+  cidr_block = "10.0.0.0/16"
   instance_tenancy = "default"
   tags = {
     Name = "main"
@@ -32,7 +32,7 @@ resource "aws_security_group" "jenkins-sg-2022" {
  # outbound from jenkis server
   egress {
     from_port   = 0
-    to_port     = 65535
+    to_port     = 0
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -43,20 +43,13 @@ resource "aws_security_group" "jenkins-sg-2022" {
 }
 
 resource "aws_instance" "myFirstInstance" {
-  ami           = var.ami_id
-  key_name = var.key_name
-  instance_type = var.instance_type
+  ami           = ami-0ad21ae1d0696ad58
+  key_name = terraform
+  instance_type = t2.micro
   vpc_security_group_ids = [aws_security_group.jenkins-sg-2022.id]
   tags= {
     Name = var.tag_name
   }
 }
 
-# Create Elastic IP address
-resource "aws_eip" "myFirstInstance" {
-  vpc      = true
-  instance = aws_instance.myFirstInstance.id
-tags= {
-    Name = "my_elastic_ip"
-  }
-}
+
